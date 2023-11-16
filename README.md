@@ -1,3 +1,3 @@
 # astra-virtualbox
 
-Репозиторий для установки virtualbox без боли
+Скрипт для установки virtualbox без боли
