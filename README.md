@@ -1,4 +1,4 @@
-# astra-virtualbox
+# Astra Notes
 ### Любой из этих файлов сначала нужно сделать исполнаемым с помощью команды
 `chmod +x <file_name>` 
 
