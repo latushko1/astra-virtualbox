@@ -1,50 +1,51 @@
-#!/bin/bash
+echo "
++---------------------------------------------------+
+|            Добро пожаловать, это VirtualBox       |
+|                   без боли!                       |
+|             Приятной работы и удачи!              |
+|                                                   |
+|                          🙂                       |
++---------------------------------------------------+
+"
 
-read -p $'Перед запуском проверьте есть ли в директории с скриптом файл уставновки virtualbox(virtualbox-7.0_7.0.12-159484~Debian~buster_amd64.deb).\nПродолжить выполнение? (y/n): ' choice
+read -p "Нажмите 'y' для продолжения: " answer
 
-# Проверка выбора пользователя
-if [ "$choice" != "y" ]; then
-    echo "Выход из скрипта."
+if [ "$answer" == "y" ]; then
+    echo "Выполнение установки VirtualBox"
+else
+    echo "Отмена."
     exit 0
 fi
 
-new_lines=("deb https://download.astralinux.ru/astra/stable/1.7_x86-64/repository-update/ 1.7_x86-64 main contrib non-free"
-            "deb https://download.astralinux.ru/astra/stable/1.7_x86-64/repository-base/ 1.7_x86-64 main contrib non-free")
 
+mkdir files
 
+cd files
 
-file_path="/etc/apt/sources.list" # Путь к файлу sources.list
+wget https://download.virtualbox.org/virtualbox/7.0.12/virtualbox-7.0_7.0.12-159484~Debian~buster_amd64.deb
 
-if [ -f "$file_path" ]; then
-    # Добавление новых строк в конец файла
-    for line in "${new_lines[@]}"; do
-        echo "$line" | sudo tee -a $file_path > /dev/null
-    done
-    echo "Строки успешно добавлены в $file_path"
-else
-    echo "Файл $file_path не найден. Убедитесь, что он существует."
-fi
+echo 'deb [arch=amd64] https://download.virtualbox.org/virtualbox/debian buster contrib' | sudo tee -a /etc/apt/sources.list
+echo 'deb https://dl.astralinux.ru/astra/stable/1.7_x86-64/repository-main/     1.7_x86-64 main contrib non-free' | sudo tee -a /etc/apt/sources.list
+echo 'deb https://dl.astralinux.ru/astra/stable/1.7_x86-64/repository-base/     1.7_x86-64 main contrib non-free' | sudo tee -a /etc/apt/sources.list
+echo 'deb https://dl.astralinux.ru/astra/stable/1.7_x86-64/repository-extended/ 1.7_x86-64 main contrib non-free' | sudo tee -a /etc/apt/sources.list
+
 
 sudo apt update
-sudo dpkg -i virtualbox-7.0_7.0.12-159484~Debian~buster_amd64.deb # установка virtualbox
-
-
-# уставновка libvpx5
-
-
 apt-cache policy libvpx*
+
 wget http://ftp.ru.debian.org/debian/pool/main/libv/libvpx/libvpx5_1.7.0-3+deb10u1_amd64.deb
+
 sudo apt install ./libvpx5_1.7.0-3+deb10u1_amd64.deb
 
-sudo apt install -y gcc make perl # установка gcc make perl
-sudo apt-get install build-essential libssl-dev linux-headers-`uname -r`
+sudo dpkg -i ./virtualbox-7.0_7.0.12-159484~Debian~buster_amd64.deb
 
-sudo bash /sbin/vboxconfig
+sudo apt install gcc make perl
 
-sudo bash modprobe vboxdrv
+virtualbox
 
+sudo /sbin/vboxconfig
 
-
+sudo modprobe vboxdrv
 
 
 
